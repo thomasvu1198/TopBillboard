@@ -33,13 +33,12 @@ namespace TopBillboard
             string urlTopAlbum = "https://www.billboard.com/charts/billboard-200";
 
             webBrowser1.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(webBrowser1_DocumentCompleted);
-            webBrowser1.Navigate(urlTopSong);
+            webBrowser1.Navigate(urlTopArtist);
             
-
 
         }
 
-        public bool Internet_ready()
+        public void Internet_ready()
         {
             
             webBrowser1.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(webBrowser1_DocumentCompleted);
@@ -47,14 +46,7 @@ namespace TopBillboard
             webBrowser1.Navigate("https://www.google.com/");
             Task.Delay(6000);
             textBoxInfo.Text += webBrowser1.ReadyState.ToString() + "\r\n";
-            if(webBrowser1.ReadyState != WebBrowserReadyState.Uninitialized)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+
         }
         
 
@@ -106,6 +98,10 @@ namespace TopBillboard
             if (webBrowser1.ReadyState == WebBrowserReadyState.Complete)
             {
                 textBoxInfo.Clear();
+
+                Top100SongNames = "";
+                Top100SongsAritst = "";
+
                 int countSong = 0;
                 HtmlElementCollection AllSpansSongs = webBrowser1.Document.GetElementsByTagName("span");
                 foreach (HtmlElement el in AllSpansSongs)
@@ -138,7 +134,7 @@ namespace TopBillboard
 
         // Crawling top Artist in Artist 100 Chart
         string Top100Artist = "";
-        public void GetTopArtist()
+        public void GetTopArtist(string url)
         {
             string connection;
             SqlConnection cnn;
@@ -147,6 +143,9 @@ namespace TopBillboard
             if (webBrowser1.ReadyState == WebBrowserReadyState.Complete)
             {
                 textBoxInfo.Clear();
+
+                Top100Artist = "";
+
                 int countTopArtist = 0;
                 HtmlElementCollection AllSpansArtists= webBrowser1.Document.GetElementsByTagName("span");
                 foreach (HtmlElement el in AllSpansArtists)
@@ -174,14 +173,17 @@ namespace TopBillboard
             if (webBrowser1.ReadyState == WebBrowserReadyState.Complete)
             {
                 textBoxInfo.Clear();
-
+                
+                //clear gia tri da luu trong string
+                TopAlbum = "";
+                TopAlbumArtist = "";
                 int countTopAlbum = 0;
                 HtmlElementCollection AllSpansAlbums = webBrowser1.Document.GetElementsByTagName("span");
                 foreach (HtmlElement el in AllSpansAlbums)
                 {
                     if (el.GetAttribute("className") == "chart-element__information__song text--truncate color--primary")
                     {
-                        Top100Artist = Top100Artist + " " + el.InnerText + "\r\n";
+                        TopAlbum = TopAlbum + (countTopAlbum + 1).ToString() + " " + el.InnerText + "\r\n";
                         countTopAlbum++;
                     }
                 }
@@ -197,7 +199,7 @@ namespace TopBillboard
                     }
                 }
 
-                textBoxInfo.Text = TopAlbum;
+                textBoxInfo.Text = countTopAlbum.ToString();
 
             }
         }
@@ -275,7 +277,7 @@ namespace TopBillboard
             buttonAlbum.BackColor = Color.WhiteSmoke;
             buttonArtist.BackColor = Color.WhiteSmoke;
 
-            GetTop100();
+            //GetTop100();
         }
 
         //button Artist 100
@@ -286,7 +288,7 @@ namespace TopBillboard
             buttonAlbum.BackColor = Color.WhiteSmoke;
             buttonArtist.BackColor = Color.FromArgb(206,206,206);
 
-            GetTopArtist();
+            //GetTopArtist();
         }
 
         //button Album
@@ -297,7 +299,7 @@ namespace TopBillboard
             buttonAlbum.BackColor = Color.FromArgb(206,206,206);
             buttonArtist.BackColor = Color.WhiteSmoke;
 
-            GetTopAlbum();
+           // GetTopAlbum();
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -380,7 +382,8 @@ namespace TopBillboard
             buttonArtist.BackColor = Color.WhiteSmoke;
 
             //webBrowser1.Visible = true;
-            
+
+            //Internet_ready();
 
         }
 

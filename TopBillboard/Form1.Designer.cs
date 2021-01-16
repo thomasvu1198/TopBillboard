@@ -60,7 +60,6 @@
             this.toolTipResize = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipExit = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipMini = new System.Windows.Forms.ToolTip(this.components);
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panelLeft.SuspendLayout();
             this.panelControl.SuspendLayout();
             this.panelTop.SuspendLayout();
@@ -372,7 +371,7 @@
             // 
             // webBrowser4
             // 
-            this.webBrowser4.Location = new System.Drawing.Point(3, 127);
+            this.webBrowser4.Location = new System.Drawing.Point(3, 338);
             this.webBrowser4.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser4.Name = "webBrowser4";
             this.webBrowser4.Size = new System.Drawing.Size(115, 110);
@@ -380,7 +379,7 @@
             // 
             // webBrowser3
             // 
-            this.webBrowser3.Location = new System.Drawing.Point(156, 127);
+            this.webBrowser3.Location = new System.Drawing.Point(156, 338);
             this.webBrowser3.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser3.Name = "webBrowser3";
             this.webBrowser3.Size = new System.Drawing.Size(126, 110);
@@ -388,7 +387,7 @@
             // 
             // webBrowser2
             // 
-            this.webBrowser2.Location = new System.Drawing.Point(156, 0);
+            this.webBrowser2.Location = new System.Drawing.Point(226, 234);
             this.webBrowser2.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser2.Name = "webBrowser2";
             this.webBrowser2.Size = new System.Drawing.Size(127, 98);
@@ -400,7 +399,7 @@
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
             this.webBrowser1.ScriptErrorsSuppressed = true;
-            this.webBrowser1.Size = new System.Drawing.Size(118, 99);
+            this.webBrowser1.Size = new System.Drawing.Size(366, 228);
             this.webBrowser1.TabIndex = 7;
             this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
             this.webBrowser1.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.webBrowser1_Navigating);
@@ -427,10 +426,6 @@
             this.panelMiddle.Name = "panelMiddle";
             this.panelMiddle.Size = new System.Drawing.Size(758, 451);
             this.panelMiddle.TabIndex = 9;
-            // 
-            // timer1
-            // 
-            this.timer1.Interval = 500;
             // 
             // Form1
             // 
@@ -491,7 +486,6 @@
         private System.Windows.Forms.Button buttonMinimize;
         private System.Windows.Forms.Button buttonExit;
         private System.Windows.Forms.Button buttonResize;
-        private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.WebBrowser webBrowser4;
         private System.Windows.Forms.WebBrowser webBrowser3;
         private System.Windows.Forms.WebBrowser webBrowser2;
