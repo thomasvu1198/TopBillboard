@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using HtmlAgilityPack;
+using DataHandle;
 
 
 namespace TopBillboard
@@ -19,7 +21,7 @@ namespace TopBillboard
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
             textBoxInfo.Visible = true;
             panelLyrics.Dock = DockStyle.Right;
@@ -32,23 +34,27 @@ namespace TopBillboard
             string urlTopSong = "https://www.billboard.com/charts/hot-100";
             string urlTopAlbum = "https://www.billboard.com/charts/billboard-200";
 
-            webBrowser1.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(webBrowser1_DocumentCompleted);
-            webBrowser1.Navigate(urlTopArtist);
-            
+            webBrowserTopSong.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(webBrowser2_DocumentCompleted);
+            webBrowserTopAlbum.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(webBrowser3_DocumentCompleted);
 
+            
+            await Task.Run(() => webBrowserTopSong.Navigate(urlTopSong));
+            await Task.Run(() => webBrowserTopAlbum.Navigate(urlTopAlbum));
+ 
         }
 
         public void Internet_ready()
         {
             
-            webBrowser1.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(webBrowser1_DocumentCompleted);
+            webBrowserTopArtist.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(webBrowser1_DocumentCompleted);
 
-            webBrowser1.Navigate("https://www.google.com/");
+            webBrowserTopArtist.Navigate("https://www.google.com/");
             Task.Delay(6000);
-            textBoxInfo.Text += webBrowser1.ReadyState.ToString() + "\r\n";
+            textBoxInfo.Text += webBrowserTopArtist.ReadyState.ToString() + "\r\n";
 
         }
         
+
 
         // home button
         private void button1_Click(object sender, EventArgs e)
@@ -61,6 +67,7 @@ namespace TopBillboard
 
             buttonHome.BackColor = Color.FromArgb(90, 97, 85);
             buttonGenius.BackColor = Color.FromArgb(42, 39, 41);
+            buttonLyrics.BackColor = Color.FromArgb(42, 39, 41);
             buttonInfo.BackColor = Color.FromArgb(42, 39, 41);
 
             dataGridView1.Visible = true;
@@ -79,98 +86,237 @@ namespace TopBillboard
 
             panelLyrics.Dock = DockStyle.Right;
 
-
             textBoxInfo.Clear();
 
             // we gonna display top 100 and 1st song's lyrics in text box
             
         }
 
+        // find keyword featuring, x,$
+        
         // Crawling Hot 100 songs from Hot 100
         string Top100SongNames = "";
-        string Top100SongsAritst = "";
-        public void GetTop100()
+        string Top100SongsMainAritst = "";
+        string Top100SongsFeaturedAritst = "";
+        List<string> Top100SongArtists = new List<string>();
+        public void GetTopSong()
         {
-            string connection;
-            SqlConnection cnn;
-            connection = "Server = DESKTOP-0GK7VKO; Database = myDataBase; User Id = mydb; Password = 221198;";
-                       
-            if (webBrowser1.ReadyState == WebBrowserReadyState.Complete)
+            string connection = "Server = DESKTOP-0GK7VKO; Database = TopBillboard; User Id = mydb; Password = 221198;";
+
+            if (webBrowserTopSong.ReadyState == WebBrowserReadyState.Complete)
             {
                 textBoxInfo.Clear();
 
                 Top100SongNames = "";
-                Top100SongsAritst = "";
 
+                Top100SongArtists.Clear();
                 int countSong = 0;
-                HtmlElementCollection AllSpansSongs = webBrowser1.Document.GetElementsByTagName("span");
-                foreach (HtmlElement el in AllSpansSongs)
+                HtmlElementCollection AllSpansSongs = webBrowserTopSong.Document.GetElementsByTagName("span");
+
+                using (SqlConnection cnn = new SqlConnection(connection))
                 {
-                    if (el.GetAttribute("className") == "chart-element__information__song text--truncate color--primary")
+                    cnn.Open();
+                    string commandDelete = "DELETE FROM Song";
+
+                    string commandresetid = "DBCC CHECKIDENT(Song, RESEED, 0)";
+
+                    SqlCommand resetid = new SqlCommand(commandresetid, cnn); 
+                    resetid.ExecuteNonQuery();
+                    
+
+                    SqlCommand cmddelete = new SqlCommand(commandDelete, cnn);
+                    cmddelete.ExecuteNonQuery();
+                    
+
+
+                    foreach (HtmlElement el in AllSpansSongs)
                     {
-                        Top100SongNames = Top100SongNames + " " + el.InnerText + "\r\n";
-                        countSong++;
+                        if (el.GetAttribute("className") == "chart-element__information__song text--truncate color--primary")
+                        {
+                            Top100SongNames = Top100SongNames + " " + el.InnerText + "\r\n";
+
+                            string commandInsert = "INSERT INTO Song(name,RankInChart) VALUES (@name, @rank) ";
+
+                            SqlCommand cmdinsert = new SqlCommand(commandInsert, cnn);
+                            cmdinsert.Parameters.AddWithValue("@name", el.InnerText);
+                            cmdinsert.Parameters.AddWithValue("@rank", (countSong + 1));
+                                                                                
+                            cmdinsert.ExecuteNonQuery();
+                           
+                            countSong++;
+                        }
+                    }
+
+                    // Lay ten artist
+                    int countArtist = 0;
+                    HtmlElementCollection AllSpansArtist = webBrowserTopSong.Document.GetElementsByTagName("span");
+                    textBoxInfo.Clear();
+
+                    string commandDeleteArtist = "DELETE FROM Artist";
+                    SqlCommand CmdDeleteArtist = new SqlCommand(commandDeleteArtist,cnn);
+                    CmdDeleteArtist.ExecuteNonQuery();
+
+                    string commandresetArtistid = "DBCC CHECKIDENT(Artist, RESEED, 0)";
+                    SqlCommand CmdresetArtistid = new SqlCommand(commandresetArtistid, cnn);
+                    CmdresetArtistid.ExecuteNonQuery();
+
+                    foreach (HtmlElement el in AllSpansArtist)
+                    {
+                        //int i = 0;
+                        Top100SongsMainAritst = "";
+                        Top100SongsFeaturedAritst = "";
+
+                        if (el.GetAttribute("className") == "chart-element__information__artist text--truncate color--secondary")
+                        {
+
+                            //Top100SongArtists.Add(el.InnerText);
+                            string[] NameArtist = el.InnerText.Split(' ');
+
+                            int IndexOfFt = StringHandle.GetKeyWords(NameArtist, "featuring");
+
+                            //int IndexofAnd = StringHandle.GetKeyWords(NameArtist, "&");
+
+                            //int IndexofX = StringHandle.GetKeyWords(NameArtist, "x");
+                            
+                            //neu co featuring
+                            if (IndexOfFt != 0)
+                            {
+                                // cut string lam 2 voi index of string("featuring") lam moc
+                                //doan dau se la main artist
+                                // ta luu vao db
+                                
+                                for (int i = 0; i < IndexOfFt; i++)
+                                {
+                                    Top100SongsMainAritst += NameArtist[i].ToString() + " ";
+                                }
+                                try
+                                {
+                                    string CommandInsertArtist = "INSERT INTO Artist(name) VALUES(@name)";
+
+                                    SqlCommand cmdInsertArtist = new SqlCommand(CommandInsertArtist, cnn);
+
+                                    cmdInsertArtist.Parameters.AddWithValue("@name", Top100SongsMainAritst);
+                                                                  
+                                    cmdInsertArtist.ExecuteNonQuery();
+                                    
+                                }
+                                catch (SqlException ex)
+                                {
+                                    Console.Write(ex.Message);
+
+                                }
+                                //doan sau se la featured artist
+                                for (int i = IndexOfFt + 1; i < NameArtist.Length; i++)
+                                {
+                                    Top100SongsFeaturedAritst += NameArtist[i].ToString() + " ";
+                                }
+                                try
+                                {
+                                    string CommandInsertArtist = "INSERT INTO Artist(name) VALUES(@name)";
+
+                                    SqlCommand cmdInsertArtist = new SqlCommand(CommandInsertArtist, cnn);
+
+                                    cmdInsertArtist.Parameters.AddWithValue("@name", Top100SongsFeaturedAritst);
+
+                                    cmdInsertArtist.ExecuteNonQuery();
+                                    
+                                }
+                                catch (SqlException ex)
+                                {
+                                    Console.Write(ex.Message);
+                                }
+                                
+                            }
+
+                            //khi khong co
+                            else
+                            {
+                                for (int i = 0; i < NameArtist.Length; i++)
+                                {
+
+                                    Top100SongsMainAritst += NameArtist[i].ToString() + " ";
+                                }
+                            
+                                try
+                                {
+                                    string CommandInsertArtist = "INSERT INTO Artist(name) VALUES(@name)";
+
+                                    SqlCommand cmdInsertArtist = new SqlCommand(CommandInsertArtist, cnn);
+
+                                    cmdInsertArtist.Parameters.AddWithValue("@name", Top100SongsMainAritst);
+
+                                   
+                                    cmdInsertArtist.ExecuteNonQuery();
+                                  
+                                }
+                                catch(SqlException ex)
+                                {
+                                    Console.Write(ex.Message);
+                                }
+                            }
+                            //MessageBox.Show(IndexofAnd.ToString());
+                            //Top100SongsMainAritst += NameArtist[i].ToString();
+                            //Top100SongsMainAritst += "\r\n";
+                            countArtist++;
+
+                        }
                     }
                 }
+                //textBoxInfo.Text += Top100SongsFeaturedAritst;
+                //MessageBox.Show(Top100SongArtists[0]);
 
-                int countArtist = 0;
-                HtmlElementCollection AllSpansArtist = webBrowser1.Document.GetElementsByTagName("span");
-                foreach (HtmlElement el in AllSpansArtist)
-                {
-                    if (el.GetAttribute("className") == "chart-element__information__artist text--truncate color--secondary")
-                    {
-                        Top100SongsAritst = Top100SongsAritst + (countArtist + 1).ToString() +
-                            " " + el.InnerText + "\r\n";
-                        countArtist++;
-                    }
-                }
-
-                textBoxInfo.Text = Top100SongNames;
-                
             }
-           
+            textBoxInfo.Text = Top100SongNames;
 
         }
 
-        // Crawling top Artist in Artist 100 Chart
         string Top100Artist = "";
-        public void GetTopArtist(string url)
+        public void GetTopArtist()
         {
-            string connection;
-            SqlConnection cnn;
-            connection = "Server = DESKTOP-0GK7VKO; Database = myDataBase; User Id = mydb; Password = 221198;";
+            var html = @"https://www.billboard.com/charts/artist-100";
+   
+            string connection = "Server = DESKTOP-0GK7VKO; Database = TopBillboard; User Id = mydb; Password = 221198;";
 
-            if (webBrowser1.ReadyState == WebBrowserReadyState.Complete)
+            HtmlWeb web = new HtmlWeb();
+
+            var htmlDoc = web.Load(html);
+            using (SqlConnection cnn = new SqlConnection(connection))
             {
-                textBoxInfo.Clear();
+                cnn.Open();
+                var main = htmlDoc.GetElementbyId("main");
 
-                Top100Artist = "";
-
-                int countTopArtist = 0;
-                HtmlElementCollection AllSpansArtists= webBrowser1.Document.GetElementsByTagName("span");
-                foreach (HtmlElement el in AllSpansArtists)
+                var listNames = main.SelectNodes("//span[contains(@class, 'chart-list-item__title-text')]");
+                foreach (var name in listNames)
                 {
-                    if (el.GetAttribute("className") == "chart-list-item__title-text")
+                    try
                     {
-                        Top100Artist = Top100Artist + " " + el.InnerText + "\r\n";
-                        countTopArtist++;
+                        string InsertArtist = "INSERT INTO Artist(name) VALUES(@name)";
+                        SqlCommand CmdInsArtist = new SqlCommand(InsertArtist, cnn);
+                        CmdInsArtist.Parameters.AddWithValue("@name", name.InnerText);
+                        textBoxInfo.Text += name.InnerText + "\r\n";
+                        CmdInsArtist.ExecuteNonQuery();
                     }
+                    catch(SqlException ex)
+                    {
+                        Console.Write(ex.Message);
+                    }
+                   
                 }
 
             }
-            textBoxInfo.Text = Top100Artist;
         }
+
 
         // Crawling top 200 Album in Billboard 200
         string TopAlbum = "";
         string TopAlbumArtist = "";
         public void GetTopAlbum()
         {
-            string connection;
+            
             SqlConnection cnn;
-            connection = "Server = DESKTOP-0GK7VKO; Database = myDataBase; User Id = mydb; Password = 221198;";
+            string connection = "Server = DESKTOP-0GK7VKO; Database = myDataBase; User Id = mydb; Password = 221198;";
 
-            if (webBrowser1.ReadyState == WebBrowserReadyState.Complete)
+            if (webBrowserTopAlbum.ReadyState == WebBrowserReadyState.Complete)
             {
                 textBoxInfo.Clear();
                 
@@ -178,7 +324,7 @@ namespace TopBillboard
                 TopAlbum = "";
                 TopAlbumArtist = "";
                 int countTopAlbum = 0;
-                HtmlElementCollection AllSpansAlbums = webBrowser1.Document.GetElementsByTagName("span");
+                HtmlElementCollection AllSpansAlbums = webBrowserTopAlbum.Document.GetElementsByTagName("span");
                 foreach (HtmlElement el in AllSpansAlbums)
                 {
                     if (el.GetAttribute("className") == "chart-element__information__song text--truncate color--primary")
@@ -189,7 +335,7 @@ namespace TopBillboard
                 }
 
                 int countTopAlbumArtist = 0;
-                HtmlElementCollection AllSpansAlbumsArtist = webBrowser1.Document.GetElementsByTagName("span");
+                HtmlElementCollection AllSpansAlbumsArtist = webBrowserTopAlbum.Document.GetElementsByTagName("span");
                 foreach (HtmlElement el in AllSpansAlbumsArtist)
                 {
                     if (el.GetAttribute("className") == "chart-element__information__artist text--truncate color--secondary")
@@ -199,7 +345,7 @@ namespace TopBillboard
                     }
                 }
 
-                textBoxInfo.Text = countTopAlbum.ToString();
+                //textBoxInfo.Text = countTopAlbum.ToString();
 
             }
         }
@@ -209,24 +355,23 @@ namespace TopBillboard
         // genius button
         private void button1_Click_1(object sender, EventArgs e)
         {
-            buttonGraph.BackColor = Color.WhiteSmoke;
-            buttonWeek.BackColor = Color.WhiteSmoke;
-            buttonAlbum.BackColor = Color.WhiteSmoke;
-            buttonArtist.BackColor = Color.WhiteSmoke;
+            //buttonGraph.BackColor = Color.WhiteSmoke;
+            //buttonWeek.BackColor = Color.WhiteSmoke;
+            //buttonAlbum.BackColor = Color.WhiteSmoke;
+            //buttonArtist.BackColor = Color.WhiteSmoke;
 
             buttonHome.BackColor = Color.FromArgb(42, 39, 41);
             buttonGenius.BackColor = Color.FromArgb(90, 97, 85);
+            buttonLyrics.BackColor = Color.FromArgb(42, 39, 41);
             buttonInfo.BackColor = Color.FromArgb(42, 39, 41);
 
             panelLyrics.Dock = DockStyle.Right;
 
-            dataGridView1.Visible = true;
-            labelHeadingInfo.Visible = true;
+            dataGridView1.Visible = false;
+            textBoxInfo.Visible = true;
+            labelHeadingInfo.Visible = false;
 
-            buttonAlbum.Visible = true;
-            buttonArtist.Visible = true;
-            buttonWeek.Visible = true;
-            buttonGraph.Visible = true;
+            panelButtonTop1.Visible = false;
 
             panelChart.Width = panelMiddle.Width / 2 - 10;
             panelLyrics.Width = panelMiddle.Width / 2;
@@ -247,6 +392,7 @@ namespace TopBillboard
 
             buttonHome.BackColor = Color.FromArgb(42, 39, 41);
             buttonGenius.BackColor = Color.FromArgb(42, 39, 41);
+            buttonLyrics.BackColor = Color.FromArgb(42, 39, 41);
             buttonInfo.BackColor = Color.FromArgb(90, 97, 85);
 
             buttonAlbum.Visible = false;
@@ -266,10 +412,10 @@ namespace TopBillboard
                                "and their lyrics for everyone. \r\n\r\n\r\n" +
                                "Billboard Chart is displayed in Dashboard while Genius's Trending " +
                                "show top 10 trending on genius of all genres.";
-            webBrowser1.Visible = false;
+            webBrowserTopArtist.Visible = false;
         }
 
-        //button week
+        //button week -> get top song in week
         private void button4_Click(object sender, EventArgs e)
         {
             buttonGraph.BackColor = Color.WhiteSmoke;
@@ -277,7 +423,8 @@ namespace TopBillboard
             buttonAlbum.BackColor = Color.WhiteSmoke;
             buttonArtist.BackColor = Color.WhiteSmoke;
 
-            //GetTop100();
+            textBoxInfo.Clear();
+            //textBoxInfo.Text = Top100SongArtists;
         }
 
         //button Artist 100
@@ -288,7 +435,8 @@ namespace TopBillboard
             buttonAlbum.BackColor = Color.WhiteSmoke;
             buttonArtist.BackColor = Color.FromArgb(206,206,206);
 
-            //GetTopArtist();
+            textBoxInfo.Clear();
+            textBoxInfo.Text = Top100Artist;
         }
 
         //button Album
@@ -299,15 +447,11 @@ namespace TopBillboard
             buttonAlbum.BackColor = Color.FromArgb(206,206,206);
             buttonArtist.BackColor = Color.WhiteSmoke;
 
-           // GetTopAlbum();
+            textBoxInfo.Clear();
+            textBoxInfo.Text = TopAlbumArtist;
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
         {
 
         }
@@ -352,7 +496,16 @@ namespace TopBillboard
         //minimize button
         private void buttonMinimize_Click(object sender, EventArgs e)
         {
+            if (WindowState == FormWindowState.Normal)
+            {
+                max = false;
+            }
+            if (WindowState == FormWindowState.Maximized)
+            {
+                max = true;
+            }
             WindowState = FormWindowState.Minimized;
+
         }
 
         int movX, movY;
@@ -411,18 +564,80 @@ namespace TopBillboard
             toolTipMini.Show("Minimize", buttonMinimize);
         }
 
+        // get top artist when web1 load complete
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            if (e.Url != webBrowser1.Url)
+            if (e.Url != webBrowserTopArtist.Url)
                 return;
-
+           GetTopArtist();
 
 
         }
 
         private void webBrowser1_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
-            textBoxInfo.Text += webBrowser1.ReadyState.ToString() + "\r\n";
+            //textBoxInfo.Text += webBrowserTopArtist.ReadyState.ToString() + "\r\n";
+           
+        }
+
+        //get top album when web3 load complete
+        private void webBrowser3_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            if (e.Url != webBrowserTopAlbum.Url)
+                return;
+           // GetTopAlbum();
+
+        }
+
+        //get top song when web2 load complete
+        private void webBrowser2_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            if (e.Url.AbsolutePath != (sender as WebBrowser).Url.AbsolutePath)
+            {
+               
+                return;
+            }
+            else
+            {
+               //GetTopSong();
+                return;
+            }
+
+        }
+
+        //button lyrics
+        private void buttonLyrics_Click(object sender, EventArgs e)
+        {
+            buttonHome.BackColor = Color.FromArgb(42, 39, 41);
+            buttonGenius.BackColor = Color.FromArgb(42, 39, 41);
+            buttonLyrics.BackColor = Color.FromArgb(90, 97, 85);
+            buttonInfo.BackColor = Color.FromArgb(42, 39, 41);
+
+            //di chuyen thanh vang den button duoc chon
+            panelSelect.Height = buttonLyrics.Height;
+            panelSelect.Top = buttonLyrics.Top;
+
+            
+        }
+
+        private void Form1_Activated(object sender, EventArgs e)
+        {
+
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                if (max == true)
+                {
+                    WindowState = FormWindowState.Maximized;
+                    
+                }
+
+                if (max == false)
+                {
+                    WindowState = FormWindowState.Normal;
+                   
+                }
+            }
+
         }
 
         private void panelColor1_MouseDown(object sender, MouseEventArgs e)

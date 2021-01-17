@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.panelLeft = new System.Windows.Forms.Panel();
+            this.buttonLyrics = new System.Windows.Forms.Button();
             this.buttonInfo = new System.Windows.Forms.Button();
             this.buttonGenius = new System.Windows.Forms.Button();
             this.panelSelect = new System.Windows.Forms.Panel();
@@ -51,10 +52,10 @@
             this.textBoxInfo = new System.Windows.Forms.TextBox();
             this.labelHeadingInfo = new System.Windows.Forms.Label();
             this.panelChart = new System.Windows.Forms.Panel();
-            this.webBrowser4 = new System.Windows.Forms.WebBrowser();
-            this.webBrowser3 = new System.Windows.Forms.WebBrowser();
-            this.webBrowser2 = new System.Windows.Forms.WebBrowser();
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.webBrowserLyrics = new System.Windows.Forms.WebBrowser();
+            this.webBrowserTopAlbum = new System.Windows.Forms.WebBrowser();
+            this.webBrowserTopSong = new System.Windows.Forms.WebBrowser();
+            this.webBrowserTopArtist = new System.Windows.Forms.WebBrowser();
             this.panelLyrics = new System.Windows.Forms.Panel();
             this.panelMiddle = new System.Windows.Forms.Panel();
             this.toolTipResize = new System.Windows.Forms.ToolTip(this.components);
@@ -74,6 +75,7 @@
             // panelLeft
             // 
             this.panelLeft.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(42)))), ((int)(((byte)(39)))), ((int)(((byte)(41)))));
+            this.panelLeft.Controls.Add(this.buttonLyrics);
             this.panelLeft.Controls.Add(this.buttonInfo);
             this.panelLeft.Controls.Add(this.buttonGenius);
             this.panelLeft.Controls.Add(this.panelSelect);
@@ -84,6 +86,23 @@
             this.panelLeft.Size = new System.Drawing.Size(133, 596);
             this.panelLeft.TabIndex = 0;
             // 
+            // buttonLyrics
+            // 
+            this.buttonLyrics.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonLyrics.BackgroundImage")));
+            this.buttonLyrics.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.buttonLyrics.FlatAppearance.BorderSize = 0;
+            this.buttonLyrics.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonLyrics.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonLyrics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(120)))), ((int)(((byte)(138)))));
+            this.buttonLyrics.Location = new System.Drawing.Point(7, 271);
+            this.buttonLyrics.Name = "buttonLyrics";
+            this.buttonLyrics.Size = new System.Drawing.Size(125, 124);
+            this.buttonLyrics.TabIndex = 6;
+            this.buttonLyrics.Text = "Find Lyrics";
+            this.buttonLyrics.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.buttonLyrics.UseVisualStyleBackColor = true;
+            this.buttonLyrics.Click += new System.EventHandler(this.buttonLyrics_Click);
+            // 
             // buttonInfo
             // 
             this.buttonInfo.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonInfo.BackgroundImage")));
@@ -92,7 +111,7 @@
             this.buttonInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonInfo.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(120)))), ((int)(((byte)(138)))));
-            this.buttonInfo.Location = new System.Drawing.Point(7, 256);
+            this.buttonInfo.Location = new System.Drawing.Point(7, 404);
             this.buttonInfo.Name = "buttonInfo";
             this.buttonInfo.Size = new System.Drawing.Size(125, 124);
             this.buttonInfo.TabIndex = 5;
@@ -354,14 +373,13 @@
             this.labelHeadingInfo.TabIndex = 6;
             this.labelHeadingInfo.Text = "Lyrics";
             this.labelHeadingInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.labelHeadingInfo.Click += new System.EventHandler(this.label3_Click);
             // 
             // panelChart
             // 
-            this.panelChart.Controls.Add(this.webBrowser4);
-            this.panelChart.Controls.Add(this.webBrowser3);
-            this.panelChart.Controls.Add(this.webBrowser2);
-            this.panelChart.Controls.Add(this.webBrowser1);
+            this.panelChart.Controls.Add(this.webBrowserLyrics);
+            this.panelChart.Controls.Add(this.webBrowserTopAlbum);
+            this.panelChart.Controls.Add(this.webBrowserTopSong);
+            this.panelChart.Controls.Add(this.webBrowserTopArtist);
             this.panelChart.Controls.Add(this.dataGridView1);
             this.panelChart.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelChart.Location = new System.Drawing.Point(0, 0);
@@ -369,40 +387,48 @@
             this.panelChart.Size = new System.Drawing.Size(369, 451);
             this.panelChart.TabIndex = 7;
             // 
-            // webBrowser4
+            // webBrowserLyrics
             // 
-            this.webBrowser4.Location = new System.Drawing.Point(3, 338);
-            this.webBrowser4.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser4.Name = "webBrowser4";
-            this.webBrowser4.Size = new System.Drawing.Size(115, 110);
-            this.webBrowser4.TabIndex = 10;
+            this.webBrowserLyrics.Location = new System.Drawing.Point(163, 406);
+            this.webBrowserLyrics.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowserLyrics.Name = "webBrowserLyrics";
+            this.webBrowserLyrics.Size = new System.Drawing.Size(96, 20);
+            this.webBrowserLyrics.TabIndex = 10;
+            this.webBrowserLyrics.Visible = false;
             // 
-            // webBrowser3
+            // webBrowserTopAlbum
             // 
-            this.webBrowser3.Location = new System.Drawing.Point(156, 338);
-            this.webBrowser3.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser3.Name = "webBrowser3";
-            this.webBrowser3.Size = new System.Drawing.Size(126, 110);
-            this.webBrowser3.TabIndex = 9;
+            this.webBrowserTopAlbum.Location = new System.Drawing.Point(0, 234);
+            this.webBrowserTopAlbum.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowserTopAlbum.Name = "webBrowserTopAlbum";
+            this.webBrowserTopAlbum.ScriptErrorsSuppressed = true;
+            this.webBrowserTopAlbum.Size = new System.Drawing.Size(204, 162);
+            this.webBrowserTopAlbum.TabIndex = 9;
+            this.webBrowserTopAlbum.Visible = false;
+            this.webBrowserTopAlbum.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser3_DocumentCompleted);
             // 
-            // webBrowser2
+            // webBrowserTopSong
             // 
-            this.webBrowser2.Location = new System.Drawing.Point(226, 234);
-            this.webBrowser2.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser2.Name = "webBrowser2";
-            this.webBrowser2.Size = new System.Drawing.Size(127, 98);
-            this.webBrowser2.TabIndex = 8;
+            this.webBrowserTopSong.Location = new System.Drawing.Point(210, 234);
+            this.webBrowserTopSong.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowserTopSong.Name = "webBrowserTopSong";
+            this.webBrowserTopSong.ScriptErrorsSuppressed = true;
+            this.webBrowserTopSong.Size = new System.Drawing.Size(156, 162);
+            this.webBrowserTopSong.TabIndex = 8;
+            this.webBrowserTopSong.Visible = false;
+            this.webBrowserTopSong.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser2_DocumentCompleted);
             // 
-            // webBrowser1
+            // webBrowserTopArtist
             // 
-            this.webBrowser1.Location = new System.Drawing.Point(0, 0);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.ScriptErrorsSuppressed = true;
-            this.webBrowser1.Size = new System.Drawing.Size(366, 228);
-            this.webBrowser1.TabIndex = 7;
-            this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
-            this.webBrowser1.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.webBrowser1_Navigating);
+            this.webBrowserTopArtist.Location = new System.Drawing.Point(0, 0);
+            this.webBrowserTopArtist.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowserTopArtist.Name = "webBrowserTopArtist";
+            this.webBrowserTopArtist.ScriptErrorsSuppressed = true;
+            this.webBrowserTopArtist.Size = new System.Drawing.Size(366, 228);
+            this.webBrowserTopArtist.TabIndex = 7;
+            this.webBrowserTopArtist.Visible = false;
+            this.webBrowserTopArtist.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
+            this.webBrowserTopArtist.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.webBrowser1_Navigating);
             // 
             // panelLyrics
             // 
@@ -441,6 +467,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Top Billboard";
+            this.Activated += new System.EventHandler(this.Form1_Activated);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             this.panelLeft.ResumeLayout(false);
@@ -474,7 +501,7 @@
         private System.Windows.Forms.Panel panelChart;
         private System.Windows.Forms.Panel panelLyrics;
         private System.Windows.Forms.Panel panelMiddle;
-        private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.WebBrowser webBrowserTopArtist;
         private System.Windows.Forms.Panel panelColor1;
         private System.Windows.Forms.Button buttonGraph;
         private System.Windows.Forms.Label labelLogo;
@@ -486,9 +513,10 @@
         private System.Windows.Forms.Button buttonMinimize;
         private System.Windows.Forms.Button buttonExit;
         private System.Windows.Forms.Button buttonResize;
-        private System.Windows.Forms.WebBrowser webBrowser4;
-        private System.Windows.Forms.WebBrowser webBrowser3;
-        private System.Windows.Forms.WebBrowser webBrowser2;
+        private System.Windows.Forms.WebBrowser webBrowserTopAlbum;
+        private System.Windows.Forms.WebBrowser webBrowserTopSong;
+        private System.Windows.Forms.WebBrowser webBrowserLyrics;
+        private System.Windows.Forms.Button buttonLyrics;
     }
 }
 

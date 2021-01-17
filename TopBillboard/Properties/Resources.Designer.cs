@@ -61,7 +61,36 @@ namespace TopBillboard.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon billboard {
+            get {
+                object obj = ResourceManager.GetObject("billboard", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///function getName() {
+        ///
+        ///
+        ///    /* try {
+        ///        var AllNames = document.getElementsByClassName(&quot;chart-element__information__song text--truncate color--primary&quot;);
+        ///        var NameOfSong;
+        ///        for (var i = 0; i &lt; 100; i++) {
+        ///            NameOfSong = NameOfSong + &quot;\n&quot; + AllNames[i].innerText;
+        ///        }
+        ///        return NameOfSong.length;
+        ///    }
+        ///    catch(err)
+        ///    {
+        ///        err.message;
+        ///    }
+        ///    */
+        ///    return 5;
+        ///}
+        ///.
         /// </summary>
         internal static string GetTop100 {
             get {
