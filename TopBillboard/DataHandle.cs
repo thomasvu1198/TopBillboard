@@ -22,6 +22,19 @@ namespace DataHandle
             return IndexofKeyword;
         }
 
-       
+       public static string RemoveFirstWhiteSpace(string s)
+       {
+            string NewString;
+            if(s[0] == ' ')
+            {
+                NewString = s.Remove(0, 0).Replace("\n", "").Replace("\r", "").Replace("&amp;", "and").Replace("&#039", "'");
+
+            }
+            else
+            {
+                NewString = s.Replace("\n", "").Replace("\r", "").Replace("&amp;","and").Replace("&#039;", "'"); 
+            }
+            return NewString;
+       }
     }
 }

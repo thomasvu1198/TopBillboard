@@ -52,15 +52,15 @@
             this.textBoxInfo = new System.Windows.Forms.TextBox();
             this.labelHeadingInfo = new System.Windows.Forms.Label();
             this.panelChart = new System.Windows.Forms.Panel();
-            this.webBrowserLyrics = new System.Windows.Forms.WebBrowser();
-            this.webBrowserTopAlbum = new System.Windows.Forms.WebBrowser();
             this.webBrowserTopSong = new System.Windows.Forms.WebBrowser();
-            this.webBrowserTopArtist = new System.Windows.Forms.WebBrowser();
             this.panelLyrics = new System.Windows.Forms.Panel();
             this.panelMiddle = new System.Windows.Forms.Panel();
             this.toolTipResize = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipExit = new System.Windows.Forms.ToolTip(this.components);
             this.toolTipMini = new System.Windows.Forms.ToolTip(this.components);
+            this.printDocument1 = new System.Drawing.Printing.PrintDocument();
+            this.buttonPrint = new System.Windows.Forms.Button();
+            this.printPreviewDialog1 = new System.Windows.Forms.PrintPreviewDialog();
             this.panelLeft.SuspendLayout();
             this.panelControl.SuspendLayout();
             this.panelTop.SuspendLayout();
@@ -339,12 +339,14 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(42)))), ((int)(((byte)(56)))));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(162)))), ((int)(((byte)(112)))));
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(369, 451);
+            this.dataGridView1.Size = new System.Drawing.Size(423, 451);
             this.dataGridView1.TabIndex = 4;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
@@ -357,7 +359,7 @@
             this.textBoxInfo.Multiline = true;
             this.textBoxInfo.Name = "textBoxInfo";
             this.textBoxInfo.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxInfo.Size = new System.Drawing.Size(383, 428);
+            this.textBoxInfo.Size = new System.Drawing.Size(329, 428);
             this.textBoxInfo.TabIndex = 5;
             this.textBoxInfo.TextChanged += new System.EventHandler(this.textBoxInfo_TextChanged);
             // 
@@ -376,36 +378,13 @@
             // 
             // panelChart
             // 
-            this.panelChart.Controls.Add(this.webBrowserLyrics);
-            this.panelChart.Controls.Add(this.webBrowserTopAlbum);
             this.panelChart.Controls.Add(this.webBrowserTopSong);
-            this.panelChart.Controls.Add(this.webBrowserTopArtist);
             this.panelChart.Controls.Add(this.dataGridView1);
             this.panelChart.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelChart.Location = new System.Drawing.Point(0, 0);
             this.panelChart.Name = "panelChart";
-            this.panelChart.Size = new System.Drawing.Size(369, 451);
+            this.panelChart.Size = new System.Drawing.Size(423, 451);
             this.panelChart.TabIndex = 7;
-            // 
-            // webBrowserLyrics
-            // 
-            this.webBrowserLyrics.Location = new System.Drawing.Point(163, 406);
-            this.webBrowserLyrics.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowserLyrics.Name = "webBrowserLyrics";
-            this.webBrowserLyrics.Size = new System.Drawing.Size(96, 20);
-            this.webBrowserLyrics.TabIndex = 10;
-            this.webBrowserLyrics.Visible = false;
-            // 
-            // webBrowserTopAlbum
-            // 
-            this.webBrowserTopAlbum.Location = new System.Drawing.Point(0, 234);
-            this.webBrowserTopAlbum.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowserTopAlbum.Name = "webBrowserTopAlbum";
-            this.webBrowserTopAlbum.ScriptErrorsSuppressed = true;
-            this.webBrowserTopAlbum.Size = new System.Drawing.Size(204, 162);
-            this.webBrowserTopAlbum.TabIndex = 9;
-            this.webBrowserTopAlbum.Visible = false;
-            this.webBrowserTopAlbum.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser3_DocumentCompleted);
             // 
             // webBrowserTopSong
             // 
@@ -418,27 +397,15 @@
             this.webBrowserTopSong.Visible = false;
             this.webBrowserTopSong.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser2_DocumentCompleted);
             // 
-            // webBrowserTopArtist
-            // 
-            this.webBrowserTopArtist.Location = new System.Drawing.Point(0, 0);
-            this.webBrowserTopArtist.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowserTopArtist.Name = "webBrowserTopArtist";
-            this.webBrowserTopArtist.ScriptErrorsSuppressed = true;
-            this.webBrowserTopArtist.Size = new System.Drawing.Size(366, 228);
-            this.webBrowserTopArtist.TabIndex = 7;
-            this.webBrowserTopArtist.Visible = false;
-            this.webBrowserTopArtist.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
-            this.webBrowserTopArtist.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.webBrowser1_Navigating);
-            // 
             // panelLyrics
             // 
             this.panelLyrics.BackColor = System.Drawing.Color.WhiteSmoke;
             this.panelLyrics.Controls.Add(this.textBoxInfo);
             this.panelLyrics.Controls.Add(this.labelHeadingInfo);
             this.panelLyrics.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelLyrics.Location = new System.Drawing.Point(375, 0);
+            this.panelLyrics.Location = new System.Drawing.Point(429, 0);
             this.panelLyrics.Name = "panelLyrics";
-            this.panelLyrics.Size = new System.Drawing.Size(383, 451);
+            this.panelLyrics.Size = new System.Drawing.Size(329, 451);
             this.panelLyrics.TabIndex = 8;
             // 
             // panelMiddle
@@ -453,11 +420,37 @@
             this.panelMiddle.Size = new System.Drawing.Size(758, 451);
             this.panelMiddle.TabIndex = 9;
             // 
+            // buttonPrint
+            // 
+            this.buttonPrint.Font = new System.Drawing.Font("Century Gothic", 9F);
+            this.buttonPrint.Location = new System.Drawing.Point(521, 99);
+            this.buttonPrint.Name = "buttonPrint";
+            this.buttonPrint.Size = new System.Drawing.Size(48, 27);
+            this.buttonPrint.TabIndex = 10;
+            this.buttonPrint.Text = "Print";
+            this.buttonPrint.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.buttonPrint.UseVisualStyleBackColor = true;
+            this.buttonPrint.Visible = false;
+            this.buttonPrint.Click += new System.EventHandler(this.buttonPrint_Click_1);
+            // 
+            // printPreviewDialog1
+            // 
+            this.printPreviewDialog1.AutoScrollMargin = new System.Drawing.Size(0, 0);
+            this.printPreviewDialog1.AutoScrollMinSize = new System.Drawing.Size(0, 0);
+            this.printPreviewDialog1.ClientSize = new System.Drawing.Size(400, 300);
+            this.printPreviewDialog1.Document = this.printDocument1;
+            this.printPreviewDialog1.Enabled = true;
+            this.printPreviewDialog1.Icon = ((System.Drawing.Icon)(resources.GetObject("printPreviewDialog1.Icon")));
+            this.printPreviewDialog1.Name = "printPreviewDialog1";
+            this.printPreviewDialog1.Visible = false;
+            this.printPreviewDialog1.Load += new System.EventHandler(this.printPreviewDialog1_Load);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ClientSize = new System.Drawing.Size(922, 596);
+            this.Controls.Add(this.buttonPrint);
             this.Controls.Add(this.panelMiddle);
             this.Controls.Add(this.panelTop);
             this.Controls.Add(this.panelLeft);
@@ -501,7 +494,6 @@
         private System.Windows.Forms.Panel panelChart;
         private System.Windows.Forms.Panel panelLyrics;
         private System.Windows.Forms.Panel panelMiddle;
-        private System.Windows.Forms.WebBrowser webBrowserTopArtist;
         private System.Windows.Forms.Panel panelColor1;
         private System.Windows.Forms.Button buttonGraph;
         private System.Windows.Forms.Label labelLogo;
@@ -513,10 +505,11 @@
         private System.Windows.Forms.Button buttonMinimize;
         private System.Windows.Forms.Button buttonExit;
         private System.Windows.Forms.Button buttonResize;
-        private System.Windows.Forms.WebBrowser webBrowserTopAlbum;
         private System.Windows.Forms.WebBrowser webBrowserTopSong;
-        private System.Windows.Forms.WebBrowser webBrowserLyrics;
         private System.Windows.Forms.Button buttonLyrics;
+        private System.Drawing.Printing.PrintDocument printDocument1;
+        private System.Windows.Forms.Button buttonPrint;
+        private System.Windows.Forms.PrintPreviewDialog printPreviewDialog1;
     }
 }
 
